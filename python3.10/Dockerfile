@@ -4,13 +4,14 @@ LABEL maintainer="test-labs@2gis.ru"
 LABEL source="https://github.com/2gis-test-labs/e2e-python"
 
 ENV HOME=/home/ubuntu
-ENV WORKDIR=/home/ubuntu/workdir
+ENV WORKDIR=$HOME/workdir
 
 WORKDIR /tmp
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+RUN apt update \
+    && apt install -y --no-install-recommends \
         git \
         curl \
+        nano \
         inetutils-ping \
     && rm -rf /var/lib/apt/lists/* \
     \
@@ -22,14 +23,15 @@ RUN apt-get update \
         pip \
         pip-tools \
     \
-    && echo 'echo "nano: not found, use micro instead"' > /usr/bin/nano \
-    && chmod +x /usr/bin/nano
+    && mkdir -p /venv \
+    && chmod a+rwx /venv
 
 USER ubuntu
 WORKDIR $WORKDIR
-ENV EDITOR=micro
+ENV VENV_ENABLED=true \
+    EDITOR=micro
 
-RUN python3 -m venv $HOME/.venv --upgrade-deps \
-    && echo ". $HOME/.venv/bin/activate" >> $HOME/.bashrc \
-    && mkdir -p $HOME/.config/micro \
-    && echo '{"colorscheme": "solarized"}' > $HOME/.config/micro/settings.json
+RUN python3 -m venv /venv --upgrade-deps
+
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]

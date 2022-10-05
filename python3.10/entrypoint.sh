@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 if [ "${VENV_ENABLED}" == "true" ] ; then
