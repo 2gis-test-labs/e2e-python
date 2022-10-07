@@ -1,10 +1,10 @@
 #!/bin/sh
 set -e
 
-trap : SIGINT SIGTERM
+trap : INT TERM
 
-if [ "${VENV_ENABLED}" == "true" ] ; then
-    source /venv/bin/activate
+if [ "${VENV_ENABLED}" = "true" ] ; then
+    . /venv/bin/activate
 fi
 
-exec "$@" & wait
+"$@"
